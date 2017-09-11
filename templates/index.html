@@ -1,0 +1,45 @@
+<html>
+
+  <head>
+
+    <title>Captcha Harvester</title>
+    <style type="text/css">
+      body {
+        margin: 1em 5em 0 5em;
+        font-family: sans-serif;
+        background-color: #4D4746
+      }
+      p {
+        font-family: sans-serif;
+        color: #F3F0F0
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <p>theRealChefUK | Token Harvester</p>
+
+    <form action="/submit" method="post">
+        <div class="g-recaptcha" data-sitekey="{{ sitekey }}" data-callback="sub"></div>
+        <script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script>
+        <p><input type="submit" value="Submit" id="submit"/></p>
+    </form>
+
+    <p id="tokens"></p>
+    <p>Captcha Sitekey:  {{ sitekey }}</p>
+    <p>Domain: {{ domain }}</p>
+    
+    <script>
+      function sub(){
+        document.getElementById("submit").click();
+      }
+    </script>
+
+    <script src=static/scripts/jquery-3.2.1.min.js></script>
+    <script src=static/scripts/captcha.js></script>
+
+  </body>
+
+</html>
