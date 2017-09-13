@@ -1,5 +1,8 @@
 # Manual Captcha Harvester
 
+## IMPORTANT NOTE
+This will NOT work on supreme. This is because supreme check the domain the captcha is solved on. Using this harvesting method, all captchas are harvested on cartchefs.supremenewyork.com instead of supremenewyork.com so supreme will give you a checkout error when using those tokens. The alternative is to set this harvester up on another server, change the hosts file of that server to be `127.0.0.1 supremenewyork.com` and use something like nginx or ngrok to make the `/token` endpoint externally accessible. If you try change the host file to `127.0.0.1 supremenewyork.com` on the same PC your supreme bot is running on, your cart/checkout requests will go to your localhost IP, not the supreme servers. The other alternative is to use a chrome extension to harvest (like BNB do) or to create some kinda of standalone harvester (like OSS or slayer).
+
 ## Description
 This simple script allows the user to manually harvest captchas and request them from the local server when needed. The token management is handled entirely by the server.
 
