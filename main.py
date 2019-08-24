@@ -1,32 +1,31 @@
 """
 
 Manual Captcha Harvester
-Made by @TheRealChefUK
+Made by @CrepChef
 
 """
 
-from utils import n_logging, c_logging
+from utils import Logger
 
 from flask import Flask, request, jsonify, render_template, redirect
 import logging
-import _thread
+import threading
 from datetime import datetime
 from time import sleep
 import webbrowser
 import json
 
-
 tokens = []
 
+logger = Logger()
 
 def manageTokens():
 	while True:
 		for token in tokens:
 			if token['expiry'] < datetime.now().timestamp():
 				tokens.remove(token)
-				c_logging("Token expired and deleted.", "red")
+				logger.error("Token expired and deleted")
 		sleep(5)
-
 
 def sendToken():
 	while not tokens:
@@ -34,51 +33,72 @@ def sendToken():
 	token = tokens.pop(0)
 	return token['token']
 
-
 app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 @app.route('/')
-def home():
+def index():
 	return render_template('index.html', sitekey=config['sitekey'], domain=config['domain'])
 
-@app.route('/submit', methods=['POST'])
+@app.route('/api/submit', methods=['POST'])
 def submit():
-	token = request.form['g-recaptcha-response']
-	expiry = datetime.now().timestamp() + 115
-	tokenDict = {
-		'token': token,
-		'expiry': expiry
-	}
-	tokens.append(tokenDict)
-	c_logging("Token harvested and stored.", "green")
-	return redirect('/')
+	try:
+		token = request.form['g-recaptcha-response']
+		expiry = datetime.now().timestamp() + 115
+		tokenDict = {
+			'token': token,
+			'expiry': expiry
+		}
+		tokens.append(tokenDict)
+		logger.success("Token harvested and stored")
+		return jsonify({
+			'success': True,
+			'error': None,
+			'result': 'Token harvested and stored'
+		})
+	except:
+		return jsonify({
+			'success': False,
+			'error': 'Undocumented error',
+			'result': None
+		})
 
-@app.route('/count')
-def count():
-	count = len(tokens)
-	return jsonify(count=count)
+@app.route('/api/count')
+def api_count():
+	return jsonify({
+		'success': True,
+		'error': None,
+		'result': len(tokens)
+	})
 
-@app.route('/token')
-def fetch_token():
+@app.route('/api/token')
+def api_fetch_token():
 	try:
 		token = tokens.pop(0)
-		c_logging("Token requested and returned to user.", "blue")
-		return token['token']
+		logger.status("Token requested and returned to user")
+		return jsonify({
+			'success': True,
+			'error': None,
+			'results': token['token']
+		})
 	except:
-		c_logging("Token requested but none available.", "yellow")
-		return "ERROR"
+		logger.warn("Token requested but none available")
+		return jsonify({
+			'success': False,
+			'error': 'Token requested but none available',
+			'result': None
+		})
 
 
 if __name__ == '__main__':
-	_thread.start_new_thread(manageTokens, ())
+	threading.Thread(target=manageTokens).start()
 	with open('config.json') as file:
 		config = json.load(file)
 		file.close()
-	n_logging("*****************************************************")
-	n_logging("Manual Captcha Harvester | theRealChefUK")
-	n_logging("*****************************************************")
-	n_logging("Server running at cartchefs.{}:5000".format(config['domain']))
-	webbrowser.open('http://cartchefs.{}:5000/'.format(config['domain']))
+	logger.log("*****************************************************")
+	logger.log("Manual Captcha Harvester | CrepChef")
+	logger.log("*****************************************************")
+	logger.log("Server running at harvester.{}:5000".format(config['domain']))
+	webbrowser.open('http://harvester.{}:5000/'.format(config['domain']))
 	app.run()

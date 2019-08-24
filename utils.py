@@ -2,28 +2,33 @@ from datetime import datetime
 from termcolor import cprint, colored
 
 import colorama
-colorama.init()
 
-## normal logging function - time and text
-def n_logging(text):
-	print("{} {}".format(b_(), text))
 
-## coloured logging function - time and text in colour
-def c_logging(value, colour):
-	text = colored(value, colour)
-	print("{} {}".format(b_(), text))
+class Logger():
 
-## coloured printing function - text in colour
-def c_print(value, colour):
-	text = colored(value, colour)
-	print(text)
+	def __init__(self):
+		colorama.init()
 
-## used to get the time wrapped in square brackets
-def b_():
-    timestamp = str("["+datetime.now().strftime("%H:%M:%S.%f")[:-3]+"]")
-    return timestamp
+	def __timestamp(self):
+		timestamp = str("["+datetime.now().strftime("%H:%M:%S.%f")[:-3]+"]")
+		return timestamp
 
-## just fetches the time (no square brackets)
-def stamp():
-	timestamp = datetime.now().strftime("%H:%M:%S")
-	return timestamp
+	def log(self, text):
+		print("{} {}".format(self.__timestamp(), text))
+		return
+
+	def success(self, text):
+		print("{} {}".format(self.__timestamp(), colored(text, "green")))
+		return
+
+	def warn(self, text):
+		print("{} {}".format(self.__timestamp(), colored(text, "yellow")))
+		return
+
+	def error(self, text):
+		print("{} {}".format(self.__timestamp(), colored(text, "red")))
+		return
+
+	def status(self, text):
+		print("{} {}".format(self.__timestamp(), colored(text, "magenta")))
+		return

@@ -4,9 +4,9 @@ $(function (){
 
 	$.ajax({
 		type: 'GET',
-		url: '/count',
+		url: '/api/count',
 		success: function(data) {
-			$tokens.text("Available Tokens: "+data.count)
+			$tokens.text("Available Tokens: " + data.count)
 		}
 	});
 
@@ -18,9 +18,9 @@ setInterval(function (){
 
 	$.ajax({
 		type: 'GET',
-		url: '/count',
+		url: '/api/count',
 		success: function(data) {
-			$tokens.text("Available Tokens: "+data.count)
+			$tokens.text("Available Tokens: " + data.count)
 		}
 	});
 

@@ -19,26 +19,31 @@
 
   <body>
 
-    <p>theRealChefUK | Token Harvester</p>
+    <p>CrepChef | Token Harvester</p>
 
-    <form action="/submit" method="post">
-        <div class="g-recaptcha" data-sitekey="{{ sitekey }}" data-callback="sub"></div>
-        <script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script>
-        <p><input type="submit" value="Submit" id="submit"/></p>
-    </form>
+    <div class="g-recaptcha" data-sitekey="{{ sitekey }}" data-callback="submitToken"></div>
 
-    <p id="tokens"></p>
+    <p id="tokens">Available Tokens: 0</p>
     <p>Captcha Sitekey:  {{ sitekey }}</p>
     <p>Domain: {{ domain }}</p>
     
-    <script>
-      function sub(){
-        document.getElementById("submit").click();
+    <script type="text/javascript">
+      function submitToken() {
+        $(function() {
+          jQuery.ajax({
+            url: '/api/submit',
+            method: 'POST',
+            data: {'g-recaptcha-response': grecaptcha.getResponse()},
+            dataType: 'html'
+          })
+          grecaptcha.reset()
+        })
       }
     </script>
 
-    <script src=static/scripts/jquery-3.2.1.min.js></script>
-    <script src=static/scripts/captcha.js></script>
+    <script type="text/javascript" src=static/scripts/jquery-3.2.1.min.js></script>
+    <script type="text/javascript" src=static/scripts/captcha.js></script>
+    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script>
 
   </body>
 
